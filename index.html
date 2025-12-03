@@ -63,10 +63,14 @@
             border-radius: 4px; cursor: pointer; font-size: 1em; font-weight: bold;
         }
         .submit-btn.retake { background: var(--success); }
+        
+        /* 정답 확인 버튼 스타일 강화 */
         .check-btn {
-            background: #666; color: white; border: none; padding: 8px 15px;
-            border-radius: 4px; cursor: pointer; margin-top: 10px; font-size: 0.9em;
+            background: #444; color: white; border: none; padding: 12px 0; width: 100%;
+            border-radius: 6px; cursor: pointer; margin-top: 20px; font-size: 1em; font-weight: bold;
+            display: block; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
+        .check-btn:active { background: #222; transform: translateY(1px); }
 
         /* Question Card */
         .q-card { 
@@ -158,7 +162,7 @@
             position: fixed; bottom: 0; left: 0; width: 100%; height: var(--bottom-nav-height);
             background: #ffffff; border-top: 1px solid #e0e0e0;
             z-index: 1100; box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
-            align-items: center; justify-content: space-between; padding: 0 15px; box-sizing: border-box;
+            align-items: center; justify-content: space-between; padding: 0 10px; box-sizing: border-box;
         }
         .nav-btn {
             background: white; border: 1px solid #ccc; color: #333;
@@ -167,11 +171,18 @@
         }
         .nav-btn:active { background: #f0f0f0; }
         .nav-btn.primary { background: var(--primary); color: white; border-color: var(--primary); }
+        
+        /* Updated Indicator Button for better visibility */
         .nav-indicator-btn { 
-            background: none; border: 1px solid transparent; font-size: 1.1em; font-weight: bold; color: #555; 
-            padding: 5px 10px; border-radius: 6px; display: flex; align-items: center; gap: 5px;
+            background: #f8f9fa; border: 1px solid #ccc; 
+            font-size: 1em; font-weight: bold; color: #333; 
+            padding: 8px 12px; border-radius: 8px; 
+            display: flex; align-items: center; gap: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            cursor: pointer;
         }
-        .nav-indicator-btn:active { background: #f3f2f1; }
+        .nav-indicator-btn:active { background: #e9ecef; transform: translateY(1px); }
+        .nav-label { font-size: 0.85em; color: var(--primary); margin-left: 2px; }
 
         /* Question Map Modal */
         .map-grid {
@@ -227,7 +238,7 @@
 <div class="container">
     <div id="dashboard" class="dashboard">
         <h1>어떤 모의고사를 풀까요?</h1>
-        <p style="color:#666; margin-bottom: 30px;">모든 문제는 엄격 채점 방식입니다. (부분 점수 없음)</p>
+        <p style="color:#666; margin-bottom: 30px;">모든 문제는 엄격 채점 방식입니다.</p>
         
         <div class="mode-grid">
             <button class="mode-btn" onclick="startPractice(1)">
@@ -251,7 +262,7 @@
                 <span style="font-size:0.8em; color:#eee;">(40문제 / 45분)</span>
             </button>
         </div>
-        <h3 style="margin-top:40px; color:#888;">이 페이지가 자격증 공부에 도움이 되길 바라며, 합격을 기원합니다.<br>Good Luck! 🍀</h3>
+        <h3 style="margin-top:40px; color:#888;">Good Luck! 🍀</h3>
     </div>
 
     <!-- Desktop Status Bar -->
@@ -269,8 +280,9 @@
 <div class="mobile-nav-bar" id="mobile-nav">
     <button class="nav-btn" id="mob-prev-btn" onclick="moveQuestion(-1)">◀ 이전</button>
     <button class="nav-indicator-btn" onclick="openMapModal()">
-        <span style="font-size:1.2em;">📱</span> 
+        <span style="font-size:1.2em;">▦</span> 
         <span id="mob-indicator">1 / 40</span>
+        <span class="nav-label">전체보기</span>
     </button>
     <button class="nav-btn primary" id="mob-next-btn" onclick="moveQuestion(1)">다음 ▶</button>
 </div>
@@ -481,7 +493,7 @@ function startPractice(examNum) {
     document.getElementById('exam-title').innerText = `📘 모의고사 ${examNum}회 (연습)`;
     document.getElementById('header-title-text').innerText = `📘 모의고사 ${examNum}회`;
     
-    // [수정] 헤더 타이머 숨기기 & PC 상태창 타이머 텍스트 초기화
+    // Timer handling for Practice Mode: Hide and clear
     document.getElementById('mobile-timer-area').style.display = 'none';
     document.getElementById('timer-display').innerText = ""; 
     
@@ -632,6 +644,14 @@ function renderQuestions() {
             </div>`;
         }
         
+        // Practice Mode Check Button (Mobile Friendly)
+        if (currentMode === 'practice') {
+            html += `<div style="margin-top:20px;">
+                        <button class="check-btn" onclick="checkSingle(${idx})">✅ 정답 확인</button>
+                        <div id="feedback-${idx}" class="feedback hidden"></div>
+                     </div>`;
+        }
+
         div.innerHTML = html;
         container.appendChild(div);
     });
@@ -699,6 +719,57 @@ function matchSelectVal(idx, val, el) {
         }
     }
     state.selectedKey = null;
+}
+
+// --- Check Single Question (Practice Mode) ---
+function checkSingle(idx) {
+    const q = currentQuestions[idx];
+    const user = userAnswers[idx];
+    const fbDiv = document.getElementById(`feedback-${idx}`);
+    const card = document.getElementById(`card-${idx}`);
+    let isCorrect = false;
+    let ansText = "";
+
+    if (q.type === 'radio') {
+        isCorrect = (user === q.correctTexts[0]);
+        ansText = q.correctTexts[0];
+    } else if (q.type === 'check') {
+        const correctSet = new Set(q.correctTexts);
+        const userSet = new Set(user || []);
+        isCorrect = (correctSet.size === userSet.size) && [...correctSet].every(x => userSet.has(x));
+        ansText = q.correctTexts.join(", ");
+    } else if (q.type === 'yn') {
+        let allRight = true;
+        q.ans.forEach((ans, i) => { if(!user || user[i] !== ans) allRight = false; });
+        isCorrect = allRight;
+        ansText = q.ans.join(", ");
+    } else if (q.type === 'match') {
+        let allRight = true;
+        q.pairs.forEach(p => {
+            const userVal = user ? user[p.t] : null;
+            if(userVal !== p.a) allRight = false;
+        });
+        isCorrect = allRight;
+        ansText = q.pairs.map(p => `${p.t} ➜ ${p.a}`).join(" / ");
+    }
+
+    fbDiv.classList.remove('hidden');
+    if(isCorrect) {
+        fbDiv.className = "feedback correct";
+        fbDiv.innerText = "정답입니다! 🎉";
+        card.classList.add('correct');
+        card.classList.remove('wrong');
+    } else {
+        fbDiv.className = "feedback";
+        fbDiv.innerText = `오답입니다. 정답: ${ansText}`;
+        card.classList.add('wrong');
+        card.classList.remove('correct');
+    }
+    
+    // Auto scroll to feedback if needed on mobile
+    if(window.innerWidth <= 768) {
+        fbDiv.scrollIntoView({behavior: "smooth", block: "center"});
+    }
 }
 
 function finishExam(timeOut = false) {
