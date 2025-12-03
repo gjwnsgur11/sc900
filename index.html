@@ -194,6 +194,7 @@
                 <span style="font-size:0.8em; color:#eee;">(40문제 / 45분)</span>
             </button>
         </div>
+        <h2>📣SC-900 합격을 기원합니다.📣</h2>
     </div>
 
     <div id="exam-area" class="hidden">
@@ -221,7 +222,7 @@
 <script>
 // --- Data ---
 const allQuestions = [
-    // --- 1회 (PDF 텍스트 그대로 적용) ---
+    // --- 1회 ---
     { id: "1-1", type: "yn", q: "다음 각 문장에 대해, 문장이 참이면 Yes, 거짓이면 No를 선택하세요.\n참고: 각 문항은 1점입니다.", 
       items: ["시스템 업데이트 적용은 Azure Security Center(현재 Defender for Cloud)에서 조직의 보안 점수를 증가시킨다.", 
               "Azure Security Center의 보안 점수(Secure Score)는 여러 Azure 구독(subscription)에 걸쳐 있는 리소스를 평가할 수 있다.", 
@@ -313,7 +314,7 @@ const allQuestions = [
       items: ["Azure AD Connect는 하이브리드 ID를 구현하는 데 사용할 수 있다.", "하이브리드 ID는 2개의 Microsoft 365 테넌트 구현을 필요로 한다.", "하이브리드 ID는 AD DS와 Azure AD의 동기화를 의미한다."], 
       ans: ["Y", "N", "Y"] },
 
-    // --- 2회 (PDF 텍스트 그대로 적용) ---
+    // --- 2회 ---
     { id: "2-1", type: "yn", q: "다음 각 문장에 대해, 문장이 참이면 Yes, 거짓이면 No를 선택하세요.\n참고: 각 문항은 1점입니다.", 
       items: ["문서에 디지털 서명을 하려면 개인 키(private key)가 필요하다.", "디지털 서명이 된 문서의 진위를 확인하려면 서명한 사람의 공개 키(public key)가 필요하다.", "디지털 서명이 된 문서의 진위를 확인하려면 서명한 사람의 개인 키(private key)가 필요하다."], ans: ["Y", "Y", "N"] },
     { id: "2-2", type: "radio", q: "당신은 리소스를 클라우드로 이동하려고 합니다.\nlaaS(서비스로서의 인프라), PaaS(서비스로서의 플랫폼), SaaS(서비스로서의 소프트웨어) 모델을 검토하고 있습니다.\n\n당신은 클라우드 기반 앱에서 데이터, 사용자 계정, 사용자 디바이스만 관리하려고 합니다. 이 경우 어떤 클라우드 모델을 사용해야 할까요?", ans: "B", opts: ["IaaS", "SaaS", "PaaS"] },
@@ -363,7 +364,7 @@ const allQuestions = [
       ans: ["Preventative (예방적 조치)", "Detective (탐지적 조치)", "Corrective (교정적 조치)"] },
     { id: "2-40", type: "radio", q: "여러 Azure 구독에 걸쳐 Azure 리소스를 일관된 방식으로 배포하려면 무엇을 사용해야 합니까?", ans: "D", opts: ["Microsoft Sentinel", "Microsoft Defender for Cloud", "Azure Policy", "Azure Blueprints"] },
 
-    // --- 3회 (PDF 텍스트 그대로 적용) ---
+    // --- 3회 ---
     { id: "3-1", type: "yn", q: "다음 각 문장에 대해, 문장이 참이면 Yes, 거짓이면 No를 선택하세요.\n참고: 각 문항은 1점입니다.", items: ["Azure DDoS Protection Standard는 중간자(MITM) 공격을 방어한다.", "Azure DDoS Protection Standard는 Azure 구독에서 기본적으로 활성화되어 있다.", "Azure DDoS Protection Standard는 프로토콜 기반 공격을 방어한다."], ans: ["N", "N", "Y"] },
     { id: "3-2", type: "radio", q: "다음 문장을 올바르게 완성하는 답을 선택하세요.\n\nAzure Active Directory(Azure AD)에 등록된 애플리케이션은 자동으로 ______와(과) 연결된다.", ans: "C", opts: ["guest account", "managed identity", "service principal", "user account"] },
     { id: "3-3", type: "radio", q: "다음 중 Azure 리소스를 관리하기 위해 '필요할 때만(Just-in-Time, JIT)' 관리자 권한을 제공할 수 있는 Azure AD 기능은 무엇인가요?", ans: "C", opts: ["조건부 액세스 정책(Conditional Access Policies)", "Azure AD Identity Protection", "Azure AD Privileged Identity Management(PIM)", "인증 방법 정책(Authentication Method Policies)"] },
@@ -396,8 +397,13 @@ const allQuestions = [
     { id: "3-30", type: "radio", q: "문장을 올바르게 완성하는 답을 선택하세요.\n\nMicrosoft Purview 컴플라이언스 포털에서, 탐색 창에서 기능을 제거하기 위해 사용할 수 있는 것은 ______이다", ans: "B", opts: ["Compliance Manager", "Customize navigation", "Policies", "Settings"] },
     { id: "3-31", type: "radio", q: "다음 문장을 올바르게 완성하는 답을 고르시오.\n\nMicrosoft 365 보안 센터에서 경고(alert)의 영향을 받은 디바이스를 식별하기 위해 사용할 수 있는 것은 무엇입니까?", ans: "B", opts: ["classifications", "incidents", "policies", "Secure score"] },
     { id: "3-32", type: "match", q: "Conditional Access 신호 유형을 올바른 정의와 매칭하시오.", 
-      pairs: [{t:"Device", a:"사용자의 ID 또는 계정이 손상되었을 가능성 (User risk)"}, {t:"Location", a:"인증 요청이 실제 사용자에 의해 발생한 것이 아닐 가능성 (Sign-in risk)"}], 
-      ans: ["사용자의 ID 또는 계정이 손상되었을 가능성 (User risk)", "인증 요청이 실제 사용자에 의해 발생한 것이 아닐 가능성 (Sign-in risk)"] },
+      pairs: [
+          {t:"User risk", a:"사용자의 ID 또는 계정이 손상되었을 가능성"}, 
+          {t:"Sign-in risk", a:"인증 요청이 실제 사용자에 의해 발생한 것이 아닐 가능성"}
+      ],
+      leftOptions: ["Device", "Location", "Sign-in risk", "User risk"],
+      ans: ["사용자의 ID 또는 계정이 손상되었을 가능성", "인증 요청이 실제 사용자에 의해 발생한 것이 아닐 가능성"] 
+    },
     { id: "3-33", type: "radio", q: "다음 중 '저장 데이터 암호화(Encryption at rest)'의 예시는 무엇입니까?", ans: "B", opts: ["사이트 간 VPN을 사용하여 통신을 암호화하는 것", "가상 머신 디스크를 암호화하는 것", "HTTPS 암호화 연결을 사용하여 웹사이트에 접속하는 것", "암호화된 이메일을 보내는 것"] },
     { id: "3-34", type: "yn", q: "다음 각 문장에 대해, 문장이 참이면 Yes, 거짓이면 No를 선택하세요.\n참고: 각 문항은 1점입니다.", items: ["Microsoft Intune은 Android 디바이스를 관리하는 데 사용할 수 있다.", "Microsoft Intune은 Azure 구독을 프로비저닝(provision)하는 데 사용할 수 있다.", "Microsoft Intune은 조직 소유 디바이스와 개인 소유 디바이스를 모두 관리하는 데 사용할 수 있다."], ans: ["Y", "N", "Y"] },
     { id: "3-35", type: "radio", q: "직원들의 이력서(Resume) 문서를 식별하려면 어떤 Microsoft 365 컴플라이언스 기능을 사용해야 합니까?", ans: "A", opts: ["사전 학습된 분류기(pre-trained classifiers)", "콘텐츠 탐색기(Content explorer)", "활동 탐색기(Activity explorer)", "eDiscovery 포렌식"] },
@@ -484,6 +490,10 @@ function prepareQuestions(qs) {
             q.shuffledOpts = shuffle([...q.opts]); 
         } else if (q.type === 'match') {
             q.shuffledDefs = shuffle(q.pairs.map(p => p.a));
+            // Shuffle left options if present, otherwise use standard keys
+            if (q.leftOptions) {
+                q.shuffledLeft = shuffle([...q.leftOptions]);
+            }
         }
     });
     return qs;
@@ -553,11 +563,14 @@ function renderQuestions() {
             });
         } else if (q.type === 'match') {
             matchingState[idx] = { selectedKey: null, connections: {} };
-            // Improved Layout
+            
+            // Determine items to show on left
+            const leftItems = q.shuffledLeft || q.pairs.map(p => p.t);
+
             html += `<div class="match-wrapper">
                 <div class="match-col match-keys" id="match-keys-${idx}">
                     <div class="match-header">항목 (선택)</div>
-                    ${q.pairs.map(p => `<div class="match-item" onclick="matchSelectKey(${idx}, '${p.t}', this)">${p.t}</div>`).join('')}
+                    ${leftItems.map(key => `<div class="match-item" onclick="matchSelectKey(${idx}, '${key}', this)">${key}</div>`).join('')}
                 </div>
                 <div class="match-divider">➜</div>
                 <div class="match-col match-vals" id="match-vals-${idx}">
