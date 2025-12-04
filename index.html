@@ -5,15 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
-    <title>SC-900</title>
+    <title>SC-900 합격 마스터</title>
     
-    <!-- 스타일 시트 분리 (UX 최적화 스타일은 여기에 들어갈 거야) -->
+    <!-- 스타일 시트 연결 -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <!-- [Part 1] 메인 앱 영역 (모의고사) -->
 <div id="main-app-view">
+    <!-- 메인 헤더 (고정) -->
     <div class="header-bar">
         <div class="header-left">
             <div class="header-title" id="header-title-text">☁️ SC-900</div>
@@ -27,7 +28,7 @@
             <h1>어떤 모의고사를 풀까요?</h1>
             <p style="color:#666; margin-bottom: 30px;">모든 문제는 엄격 채점 방식입니다. (부분 점수 없음)</p>
             
-            <!-- [그룹 1] 모의고사 1, 2, 3회 (기존처럼 나란히 배치) -->
+            <!-- [그룹 1] 모의고사 1, 2, 3회 -->
             <div class="mode-grid practice-grid">
                 <button class="mode-btn" onclick="startPractice(1)">
                     <span style="font-size: 2em;">📘</span>
@@ -46,7 +47,7 @@
                 </button>
             </div>
 
-            <!-- [그룹 2] 실전 시험 & 개념 백과사전 (강조 및 재배치 영역) -->
+            <!-- [그룹 2] 실전 시험 & 개념 백과사전 -->
             <div class="mode-grid special-grid">
                 <button class="mode-btn exam-mode" onclick="startExam()">
                     <span style="font-size: 2em;">⏱️</span>
@@ -66,12 +67,15 @@
 
         <!-- Exam Area -->
         <div id="exam-area" class="hidden">
+            <!-- 문제 리스트가 먼저 나옴 -->
+            <div id="question-list"></div>
+
+            <!-- [위치 변경] 상태 바 (제출/채점)를 맨 아래로 이동 -->
             <div class="status-bar" id="desktop-status-bar">
                 <div id="exam-title" style="font-weight:bold; font-size:1.1em;"></div>
                 <div id="timer-display" class="timer"></div>
                 <button id="submit-btn" class="submit-btn" onclick="finishExam()">제출 및 채점</button>
             </div>
-            <div id="question-list"></div>
         </div>
     </div>
 
@@ -112,9 +116,18 @@
 
 <!-- [Part 2] 개념 정리 (asd.html 내용) -->
 <div id="concept-view">
+    <!-- [추가] 개념 백과사전용 고정 헤더 (메인과 디자인 통일) -->
+    <div class="header-bar concept-fixed-header">
+        <div class="header-left">
+            <div class="header-title">📚 개념 백과사전</div>
+        </div>
+        <!-- 기존 'concept-back-btn' 대신 메인과 동일한 'home-btn' 클래스 사용 -->
+        <button class="home-btn" onclick="hideConceptView()">🏠 처음</button>
+    </div>
+
     <div class="concept-container">
         <div class="concept-header">
-            <button class="concept-back-btn" onclick="hideConceptView()">◀ 메인 화면으로 돌아가기</button>
+            <!-- 기존 뒤로가기 버튼 제거됨 (헤더로 이동) -->
             <h1>📚 SC-900 개념 백과사전</h1>
             <p>제공된 120문제를 완벽 분석하여 정리한 모든 개념입니다.</p>
             <input type="text" id="searchInput" class="search-box" placeholder="개념 검색 (예: MFA, Bastion)" onkeyup="filterConcepts()">
