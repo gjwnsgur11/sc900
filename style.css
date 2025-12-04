@@ -44,13 +44,13 @@ body {
 
 /* 2. 레이아웃 구조 (Header & Container) */
 
-/* 상단 헤더 (고정) */
+/* 상단 메인 헤더 (이 부분은 계속 따라다님: Fixed) */
 .header-bar {
     position: fixed; top: 0; left: 0; width: 100%; 
     height: calc(var(--header-height) + var(--safe-top));
     padding-top: var(--safe-top); /* 노치 영역 확보 */
     background: rgba(255,255,255,0.95); 
-    backdrop-filter: blur(10px); /* 블러 효과로 고급스럽게 */
+    backdrop-filter: blur(10px); 
     border-bottom: 1px solid rgba(0,0,0,0.1);
     display: flex; align-items: center; justify-content: space-between;
     padding-left: 15px; padding-right: 15px; 
@@ -64,21 +64,34 @@ body {
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
 }
 
-/* 모바일용 타이머 (헤더 안에 숨어있다 나타남) */
+/* 모바일용 타이머 */
 .mobile-timer {
     font-weight: bold; color: var(--error); font-size: 1.1em; 
     background: #fff0f0; padding: 4px 10px; border-radius: 20px;
     display: none; border: 1px solid #ffcccc; margin-left: auto;
 }
 
-/* 홈 버튼 (심플하게) */
+/* [공통 버튼 스타일] 홈 버튼 & 돌아가기 버튼 디자인 통일 */
 .home-btn { 
-    background: transparent; border: 2px solid var(--primary); color: var(--primary); 
-    padding: 6px 14px; border-radius: 20px; cursor: pointer; 
-    font-weight: 700; font-size: 0.9em; flex-shrink: 0;
+    background: transparent; 
+    border: 2px solid var(--primary); 
+    color: var(--primary); 
+    padding: 6px 14px; 
+    border-radius: 20px; 
+    cursor: pointer; 
+    font-weight: 700; 
+    font-size: 0.9em; 
+    flex-shrink: 0;
     transition: all 0.2s ease;
+    display: inline-flex; 
+    align-items: center; 
+    justify-content: center;
+    text-decoration: none;
 }
-.home-btn:active, .home-btn:hover { background: var(--primary); color: white; }
+.home-btn:active, .home-btn:hover { 
+    background: var(--primary); 
+    color: white; 
+}
 
 /* 메인 컨테이너 */
 .app-container { 
@@ -88,7 +101,7 @@ body {
     padding-bottom: 100px; 
 }
 
-/* 3. 대시보드 & 버튼 디자인 (UX 개선 핵심!) */
+/* 3. 대시보드 & 버튼 디자인 */
 .dashboard { text-align: center; margin-top: 20px; animation: fadeIn 0.5s ease-out; }
 .dashboard h1 { margin-bottom: 10px; font-size: 1.8em; letter-spacing: -0.5px; }
 
@@ -97,17 +110,17 @@ body {
     display: grid; gap: 15px; margin-bottom: 20px; 
 }
 
-/* [Part 1] 연습 모드 그리드 (3단 배열 유지 - 요청사항 반영) */
+/* [Part 1] 연습 모드 그리드 (3단 배열) */
 .practice-grid {
-    grid-template-columns: repeat(3, 1fr); /* 데스크탑 3열 */
+    grid-template-columns: repeat(3, 1fr); 
 }
 
-/* [Part 2] 스페셜 그리드 (2단 배열 - 중요도 강조) */
+/* [Part 2] 스페셜 그리드 (2단 배열) */
 .special-grid {
-    grid-template-columns: repeat(2, 1fr); /* 데스크탑 2열 */
-    margin-top: 30px; /* 위쪽 그룹과 간격 */
+    grid-template-columns: repeat(2, 1fr); 
+    margin-top: 30px; 
     padding-top: 20px;
-    border-top: 1px dashed #ccc; /* 시각적 분리선 */
+    border-top: 1px dashed #ccc; 
 }
 
 /* 버튼 공통 스타일 */
@@ -116,7 +129,7 @@ body {
     border: 1px solid #e0e0e0; 
     padding: 25px 15px; 
     cursor: pointer; 
-    border-radius: 16px; /* 둥글게 */
+    border-radius: 16px; 
     font-size: 1.1em; 
     transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
     box-shadow: 0 4px 12px rgba(0,0,0,0.05); 
@@ -124,11 +137,9 @@ body {
     position: relative; overflow: hidden;
 }
 
-/* 버튼 호버/클릭 효과 */
 .mode-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
 .mode-btn:active { transform: scale(0.96); }
 
-/* 실전 시험 버튼 (강조) */
 .mode-btn.exam-mode { 
     background: linear-gradient(135deg, var(--primary) 0%, #005a9e 100%); 
     color: white; border: none;
@@ -136,26 +147,28 @@ body {
 }
 .mode-btn.exam-mode span { color: white !important; }
 
-/* 개념 백과사전 버튼 (보라색 포인트) */
 .mode-btn.concept-mode {
-    background: #fff; border: 2px solid #9d7ad2; /* 보라색 테두리 */
+    background: #fff; border: 2px solid #9d7ad2; 
 }
-.mode-btn.concept-mode span:first-child { transform: scale(1.1); } /* 아이콘 약간 크게 */
+.mode-btn.concept-mode span:first-child { transform: scale(1.1); } 
 
 /* 4. 시험 UI (Exam Interface) */
 
-/* 상태 바 (타이머, 제출 버튼) */
+/* [수정] 상태 바 (제출/채점 바) - 최하단 이동 및 Sticky 제거 */
 .status-bar { 
     display: flex; justify-content: space-between; align-items: center; 
     background: rgba(255,255,255,0.9); backdrop-filter: blur(5px);
     padding: 15px 25px; border-radius: 12px; margin-bottom: 25px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.08); 
-    position: sticky; top: calc(var(--header-height) + var(--safe-top) + 10px); 
-    z-index: 900; border: 1px solid rgba(0,0,0,0.05);
+    
+    /* Sticky 속성 제거: 문서를 따라다니지 않고 지정된 위치(바닥)에 고정 */
+    position: relative; 
+    z-index: 1; 
+    border: 1px solid rgba(0,0,0,0.05);
+    margin-top: 40px; /* 문제 목록과의 간격 */
 }
 .timer { font-weight: 800; font-size: 1.8em; color: var(--error); font-variant-numeric: tabular-nums; }
 
-/* 제출 버튼 스타일 */
 .submit-btn {
     background: var(--primary); color: white; border: none; padding: 12px 30px; 
     border-radius: 8px; cursor: pointer; font-size: 1em; font-weight: 700;
@@ -164,14 +177,13 @@ body {
 .submit-btn:active { transform: scale(0.95); }
 .submit-btn.retake { background: var(--success); box-shadow: 0 4px 10px rgba(16,124,16,0.3); }
 
-/* 문제 카드 (Question Card) */
+/* 문제 카드 */
 .q-card { 
     background: var(--card); padding: 30px; margin-bottom: 30px; 
     border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.04);
     border: 1px solid #f0f0f0;
     transition: transform 0.2s;
 }
-/* 정답/오답 상태 표시 */
 .q-card.correct { border-left: 6px solid var(--success); background-color: #f6fffa; }
 .q-card.wrong { border-left: 6px solid var(--error); background-color: #fff6f6; }
 
@@ -180,7 +192,6 @@ body {
     color: #201f1e; line-height: 1.6; word-break: keep-all; 
 }
 
-/* 보기 (Options) */
 .options label { 
     display: flex; align-items: flex-start;
     padding: 16px; margin: 10px 0; border: 2px solid #e1dfdd; 
@@ -195,7 +206,6 @@ body {
 }
 .options input:checked + span { font-weight: bold; color: var(--primary); }
 
-/* Yes/No 버튼 그룹 */
 .yn-group { display: flex; gap: 12px; margin-bottom: 15px; }
 .yn-item {
     background: #fafafa; padding: 20px; border-radius: 12px; 
@@ -211,7 +221,6 @@ input[type="radio"].yn-input { display: none; }
 input[value="Y"]:checked + label { background: var(--success); color: white; border-color: var(--success); box-shadow: 0 4px 10px rgba(16,124,16,0.2); }
 input[value="N"]:checked + label { background: var(--error); color: white; border-color: var(--error); box-shadow: 0 4px 10px rgba(209,52,56,0.2); }
 
-/* 매칭형 문제 (Drag style) */
 .match-wrapper {
     display: flex; align-items: stretch; justify-content: space-between; gap: 15px;
     background: #f8f9fa; padding: 25px; border-radius: 12px; border: 1px solid #e0e0e0;
@@ -248,7 +257,6 @@ input[value="N"]:checked + label { background: var(--error); color: white; borde
     border-radius: 12px; font-size: 0.75em; color: #333; margin-left: 8px; white-space: nowrap; 
 }
 
-/* 정답 확인 버튼 및 피드백 */
 .check-btn {
     background: #333; color: white; border: none; padding: 14px 0; width: 100%;
     border-radius: 8px; cursor: pointer; margin-top: 25px; font-size: 1em; font-weight: bold;
@@ -262,7 +270,7 @@ input[value="N"]:checked + label { background: var(--error); color: white; borde
 }
 .feedback.correct { background: #f0fff0; color: var(--success); border-left-color: var(--success); }
 
-/* 5. 모달 (Modal) */
+/* 5. 모달 */
 .modal {
     display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(0,0,0,0.7); z-index: 2000; align-items: center; justify-content: center;
@@ -277,7 +285,7 @@ input[value="N"]:checked + label { background: var(--error); color: white; borde
 .pass { color: var(--success); }
 .fail { color: var(--error); }
 
-/* 6. 모바일 하단 네비게이션 (Mobile Nav) */
+/* 6. 모바일 하단 네비게이션 */
 .mobile-nav-bar {
     display: none; /* JS로 활성화 */
     position: fixed; bottom: 0; left: 0; width: 100%; 
@@ -305,7 +313,6 @@ input[value="N"]:checked + label { background: var(--error); color: white; borde
 .nav-indicator-btn:active { background: #e9ecef; }
 .nav-label { font-size: 0.8em; color: var(--primary); font-weight: 600; }
 
-/* 맵 그리드 */
 .map-grid {
     display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 20px;
 }
@@ -320,58 +327,38 @@ input[value="N"]:checked + label { background: var(--error); color: white; borde
 .map-item.correct { background: var(--success); color: white; border-color: var(--success); }
 .map-item.wrong { background: var(--error); color: white; border-color: var(--error); }
 
-/* 7. 개념 백과사전 뷰 (Concept View) - asd.html 통합 */
+/* 7. 개념 백과사전 뷰 (Concept View) */
 #concept-view {
     display: none; /* JS로 토글 */
     background: var(--concept-bg);
     min-height: 100vh;
     padding-bottom: 60px;
 }
+
+/* [수정] 개념 헤더에 가려지지 않게 컨테이너 패딩 추가 */
 #concept-view .concept-container { 
     max-width: 700px; margin: 0 auto; 
     padding: 0 20px; box-sizing: border-box;
+    padding-top: 80px; /* 헤더 높이만큼 여백 확보 */
 }
 
-/* [수정] 스티키 헤더 속성 제거 (일반 흐름으로 변경) */
+/* [수정] 개념 헤더 - 일반 흐름 제거, 패딩 조정 */
 .concept-header { 
-    position: relative; /* sticky -> relative 변경 */
-    z-index: 1000;
-    
-    margin: 0 -20px 10px -20px; /* 하단 여백 약간 축소 */
-    padding: calc(20px + var(--safe-top)) 20px 20px 20px;
-    /* border-bottom 삭제 (스크롤 될 때 경계선이 어색할 수 있음) */
+    position: relative; /* 고정 아님 */
+    z-index: 1;
+    margin: 0 -20px 10px -20px; 
+    padding: 20px; /* 상단 패딩 축소 (고정 헤더가 있으므로) */
     border-bottom: none; 
     text-align: left;
+    
+    /* 헤더 내 요소들(버튼, 타이틀) 정렬 */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
-/* [수정] 뒤로 가기 버튼을 '플로팅 버튼'으로 변경 */
-.concept-back-btn {
-    display: inline-flex; align-items: center; gap: 6px;
-    /* margin-bottom 제거 (플로팅이므로 불필요) */
-    padding: 8px 16px;
-    
-    /* 화면에 고정시키는 핵심 스타일 */
-    position: fixed; 
-    top: calc(10px + var(--safe-top)); /* 노치 영역 고려하여 상단 배치 */
-    left: 20px; /* 왼쪽 여백 */
-    z-index: 2000; /* 모든 요소보다 위에 */
-    
-    /* 예쁜 디자인 추가 (유리 같은 효과) */
-    background: rgba(255, 255, 255, 0.9); 
-    backdrop-filter: blur(10px); 
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(0,0,0,0.1);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1); /* 그림자로 입체감 */
-    
-    border-radius: 30px; /* 완전 둥글게 */
-    color: var(--primary); font-weight: 700; cursor: pointer; font-size: 0.9rem;
-    transition: transform 0.2s ease;
-}
-
-/* 버튼 눌렀을 때 쫀득한 효과 */
-.concept-back-btn:active {
-    transform: scale(0.95);
-}
+/* [수정] 개념 백과 '돌아가기' 버튼 스타일 제거 (헤더로 이동했으므로) */
+/* .concept-back-btn 관련 스타일은 이제 HTML에서 제거되었으므로 CSS에서도 불필요 */
 
 .concept-header h1 { margin: 0; color: var(--concept-text-main); font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px; }
 .concept-header p { margin: 8px 0 16px 0; font-size: 0.95rem; color: var(--concept-text-sub); }
@@ -412,46 +399,37 @@ input[value="N"]:checked + label { background: var(--error); color: white; borde
     border-left: 4px solid var(--primary); line-height: 1.5;
 }
 
-/* 8. 유틸리티 클래스 */
 .hidden { display: none !important; }
 
-/* 9. 애니메이션 */
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes popUp { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
 @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-/* 10. 반응형 (Mobile Optimized) */
 @media (max-width: 768px) {
-    /* 레이아웃 변경 */
     .practice-grid {
-        grid-template-columns: 1fr; /* 모바일: 1열로 쭉 나열 */
+        grid-template-columns: 1fr; 
     }
     .special-grid {
-        grid-template-columns: 1fr; /* 모바일: 1열로 쭉 나열 */
+        grid-template-columns: 1fr; 
     }
     
-    /* 카드 및 텍스트 조정 */
     .mode-btn { padding: 20px; flex-direction: row; justify-content: flex-start; gap: 15px; text-align: left; }
-    .mode-btn span:first-child { font-size: 1.8em !important; margin: 0; } /* 이모지 */
-    .mode-btn span:nth-child(2) { margin-top: 0 !important; font-size: 1.1em; } /* 제목 */
-    .mode-btn span:last-child { margin-left: auto; font-size: 0.75em; } /* 설명 */
+    .mode-btn span:first-child { font-size: 1.8em !important; margin: 0; } 
+    .mode-btn span:nth-child(2) { margin-top: 0 !important; font-size: 1.1em; } 
+    .mode-btn span:last-child { margin-left: auto; font-size: 0.75em; } 
 
     .app-container { padding: 15px; padding-top: calc(var(--header-height) + var(--safe-top) + 10px); padding-bottom: 100px; }
     .header-bar { height: 50px; padding: 0 15px; }
     .header-title { font-size: 1em; }
     
-    /* 시험 진행 시 */
     body.exam-active .mobile-nav-bar { display: flex; }
-    #desktop-status-bar { display: none; } /* 데스크탑 바 숨김 */
+    #desktop-status-bar { display: none; } 
     
-    /* 문제 카드 모바일 최적화 */
-    .q-card { display: none; /* JS가 활성화함 */ padding: 20px; }
+    .q-card { display: none; padding: 20px; }
     .q-card.active { display: block; animation: fadeIn 0.2s; }
     
-    /* 매칭 UI 세로 배치 */
     .match-wrapper { flex-direction: column; }
     .match-divider { transform: rotate(90deg); width: 100%; height: 30px; margin: 10px 0; }
     
-    /* 개념 뷰 조정 */
     .concept-header { margin: 0 -15px 20px -15px; padding: 20px 15px; }
 }
