@@ -44,12 +44,12 @@ body {
 
 /* 2. 레이아웃 구조 (Header & Container) */
 
-/* 상단 메인 헤더 (이 부분은 계속 따라다님: Fixed) */
+/* 상단 메인 헤더 (고정) */
 .header-bar {
     position: fixed; top: 0; left: 0; width: 100%; 
     height: calc(var(--header-height) + var(--safe-top));
     padding-top: var(--safe-top); /* 노치 영역 확보 */
-    background: rgba(255,255,255,0.95); 
+    background: rgba(255,255,255,0.98); 
     backdrop-filter: blur(10px); 
     border-bottom: 1px solid rgba(0,0,0,0.1);
     display: flex; align-items: center; justify-content: space-between;
@@ -64,29 +64,43 @@ body {
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
 }
 
-/* 모바일용 타이머 */
-.mobile-timer {
-    font-weight: bold; color: var(--error); font-size: 1.1em; 
-    background: #fff0f0; padding: 4px 10px; border-radius: 20px;
-    display: none; border: 1px solid #ffcccc; margin-left: auto;
+/* [추가] PC용 타이머 스타일 */
+.timer-display {
+    font-variant-numeric: tabular-nums; /* 숫자 너비 고정 */
+    letter-spacing: -0.5px;
+    animation: fadeIn 0.5s ease;
 }
 
-/* [공통 버튼 스타일] 홈 버튼 & 돌아가기 버튼 디자인 통일 */
+/* [수정] 모바일용 타이머 (기본은 숨김, 모바일에서만 표시) */
+.mobile-timer {
+    font-weight: bold; color: var(--error); font-size: 0.9em; 
+    background: #fff0f0; padding: 4px 8px; border-radius: 20px;
+    display: none; border: 1px solid #ffcccc; margin-left: auto;
+    white-space: nowrap;
+}
+
+/* 헤더 오른쪽 영역 (버튼 및 토글) */
+.header-right {
+    display: flex; align-items: center; gap: 8px; flex-shrink: 0;
+}
+
+/* [공통 버튼 스타일] 홈 버튼 & 다시 풀기 버튼 */
 .home-btn { 
     background: transparent; 
     border: 2px solid var(--primary); 
     color: var(--primary); 
-    padding: 6px 14px; 
+    padding: 5px 12px; 
     border-radius: 20px; 
     cursor: pointer; 
     font-weight: 700; 
-    font-size: 0.9em; 
+    font-size: 0.85em; 
     flex-shrink: 0;
     transition: all 0.2s ease;
     display: inline-flex; 
     align-items: center; 
     justify-content: center;
     text-decoration: none;
+    white-space: nowrap;
 }
 .home-btn:active, .home-btn:hover { 
     background: var(--primary); 
@@ -154,28 +168,87 @@ body {
 
 /* 4. 시험 UI (Exam Interface) */
 
-/* [수정] 상태 바 (제출/채점 바) - 최하단 이동 및 Sticky 제거 */
+/* 상단 시험 정보 영역 (제목) */
+.exam-top-info {
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between;
+    margin-bottom: 25px;
+    padding: 0 5px;
+    flex-wrap: wrap; 
+    gap: 10px;
+}
+.exam-top-info h2 {
+    margin: 0;
+    font-size: 1.5em;
+    font-weight: 800;
+    color: #323130;
+}
+
+/* [추가] 자동 채점 토글 스위치 디자인 */
+.switch-label {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    gap: 8px;
+    margin-right: 5px;
+}
+.switch-label input { display: none; }
+.toggle-track {
+    width: 36px; height: 20px; 
+    background-color: #ccc;
+    border-radius: 20px;
+    position: relative;
+    transition: 0.3s;
+    flex-shrink: 0;
+}
+.toggle-track::after {
+    content: '';
+    position: absolute;
+    top: 2px; left: 2px;
+    width: 16px; height: 16px;
+    background-color: white;
+    border-radius: 50%;
+    transition: 0.3s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+input:checked + .toggle-track { background-color: var(--primary); }
+input:checked + .toggle-track::after { transform: translateX(16px); }
+.toggle-text {
+    font-weight: 700;
+    font-size: 0.85em;
+    color: #666;
+    white-space: nowrap;
+}
+input:checked ~ .toggle-text { color: var(--primary); }
+
+
+/* [수정] 상태 바 (제출/채점 버튼만 남음) - 하단 배치 */
 .status-bar { 
-    display: flex; justify-content: space-between; align-items: center; 
-    background: rgba(255,255,255,0.9); backdrop-filter: blur(5px);
-    padding: 15px 25px; border-radius: 12px; margin-bottom: 25px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.08); 
-    
-    /* Sticky 속성 제거: 문서를 따라다니지 않고 지정된 위치(바닥)에 고정 */
+    display: flex; 
+    justify-content: center; /* 버튼 가운데 정렬 */
+    align-items: center; 
+    background: transparent; 
+    padding: 20px 0; 
+    margin-top: 40px; 
+    border: none;
+    box-shadow: none;
     position: relative; 
     z-index: 1; 
-    border: 1px solid rgba(0,0,0,0.05);
-    margin-top: 40px; /* 문제 목록과의 간격 */
 }
-.timer { font-weight: 800; font-size: 1.8em; color: var(--error); font-variant-numeric: tabular-nums; }
 
+/* 제출 버튼 크게 만들기 */
 .submit-btn {
-    background: var(--primary); color: white; border: none; padding: 12px 30px; 
-    border-radius: 8px; cursor: pointer; font-size: 1em; font-weight: 700;
-    box-shadow: 0 4px 10px rgba(0,120,212,0.3); transition: 0.2s;
+    background: var(--primary); color: white; border: none; 
+    padding: 16px 0; /* 높이 확보 */
+    width: 100%; max-width: 400px; /* 모바일 꽉 차게, PC 적당히 */
+    border-radius: 12px; cursor: pointer; font-size: 1.1em; font-weight: 800;
+    box-shadow: 0 4px 15px rgba(0,120,212,0.3); transition: 0.2s;
+    display: block; 
 }
-.submit-btn:active { transform: scale(0.95); }
-.submit-btn.retake { background: var(--success); box-shadow: 0 4px 10px rgba(16,124,16,0.3); }
+.submit-btn:active { transform: scale(0.98); }
+.submit-btn.retake { background: var(--success); box-shadow: 0 4px 15px rgba(16,124,16,0.3); }
 
 /* 문제 카드 */
 .q-card { 
@@ -334,31 +407,24 @@ input[value="N"]:checked + label { background: var(--error); color: white; borde
     min-height: 100vh;
     padding-bottom: 60px;
 }
-
-/* [수정] 개념 헤더에 가려지지 않게 컨테이너 패딩 추가 */
 #concept-view .concept-container { 
     max-width: 700px; margin: 0 auto; 
     padding: 0 20px; box-sizing: border-box;
     padding-top: 80px; /* 헤더 높이만큼 여백 확보 */
 }
 
-/* [수정] 개념 헤더 - 일반 흐름 제거, 패딩 조정 */
+/* 개념 헤더 */
 .concept-header { 
     position: relative; /* 고정 아님 */
     z-index: 1;
     margin: 0 -20px 10px -20px; 
-    padding: 20px; /* 상단 패딩 축소 (고정 헤더가 있으므로) */
+    padding: 20px; 
     border-bottom: none; 
     text-align: left;
-    
-    /* 헤더 내 요소들(버튼, 타이틀) 정렬 */
     display: flex;
     flex-direction: column;
     align-items: flex-start;
 }
-
-/* [수정] 개념 백과 '돌아가기' 버튼 스타일 제거 (헤더로 이동했으므로) */
-/* .concept-back-btn 관련 스타일은 이제 HTML에서 제거되었으므로 CSS에서도 불필요 */
 
 .concept-header h1 { margin: 0; color: var(--concept-text-main); font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px; }
 .concept-header p { margin: 8px 0 16px 0; font-size: 0.95rem; color: var(--concept-text-sub); }
@@ -405,6 +471,7 @@ input[value="N"]:checked + label { background: var(--error); color: white; borde
 @keyframes popUp { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
 @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
+/* [중요] 모바일 최적화 미디어 쿼리 */
 @media (max-width: 768px) {
     .practice-grid {
         grid-template-columns: 1fr; 
@@ -421,6 +488,14 @@ input[value="N"]:checked + label { background: var(--error); color: white; borde
     .app-container { padding: 15px; padding-top: calc(var(--header-height) + var(--safe-top) + 10px); padding-bottom: 100px; }
     .header-bar { height: 50px; padding: 0 15px; }
     .header-title { font-size: 1em; }
+
+    /* [추가] 모바일에서 PC 타이머 숨기고, 모바일 타이머 표시 */
+    .timer-display { display: none; }
+    /* .mobile-timer { display: block; }  <-- [수정] 이 부분을 삭제해서 기본적으로는 안 보이게 함 */
+
+    /* [수정] 모바일에서도 토글 텍스트(자동 채점 ON/OFF)가 보이도록 숨김 속성 제거 */
+    /* .toggle-text { display: none; } -> 이 부분을 주석 처리해서 글씨가 나오게 함 */
+    .switch-label { margin-right: 0; }
     
     body.exam-active .mobile-nav-bar { display: flex; }
     #desktop-status-bar { display: none; } 
@@ -432,4 +507,7 @@ input[value="N"]:checked + label { background: var(--error); color: white; borde
     .match-divider { transform: rotate(90deg); width: 100%; height: 30px; margin: 10px 0; }
     
     .concept-header { margin: 0 -15px 20px -15px; padding: 20px 15px; }
+    
+    /* 모바일에서 상단 정보 영역 조정 */
+    .exam-top-info h2 { font-size: 1.2em; }
 }
