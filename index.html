@@ -2,6 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
+    <!-- 모바일 환경을 위한 뷰포트 설정: 확대/축소 방지 및 안전 영역 확보 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
@@ -18,9 +19,33 @@
     <div class="header-bar">
         <div class="header-left">
             <div class="header-title" id="header-title-text">☁️ SC-900</div>
+            
+            <!-- [버그 수정 4] PC/태블릿용 타이머 디스플레이 추가 -->
+            <!-- 스크립트에서 이 ID(timer-display)를 찾지 못해 에러가 발생했음 -->
+            <div id="timer-display" class="timer-display" style="font-weight:bold; font-size:1.2em; margin-left:15px; color:#333;"></div>
+            
+            <!-- 모바일용 타이머 (화면 작을 때만 보임) -->
             <div id="mobile-timer-area" class="mobile-timer">45:00</div>
         </div>
-        <button class="home-btn" onclick="goHome()">🏠 처음</button>
+        
+        <!-- [요청 4] 자동 채점 버튼을 헤더 우측 영역으로 이동 -->
+        <div class="header-right" style="display: flex; align-items: center; gap: 8px;">
+            
+            <!-- 자동 채점 토글 (모의고사 모드에서만 JS로 표시) -->
+            <div id="auto-grade-wrapper" class="hidden">
+                <label class="switch-label">
+                    <input type="checkbox" id="auto-grade-toggle" onchange="toggleAutoGrade(this)">
+                    <span class="toggle-track"></span>
+                    <!-- [수정 완료 2] 모바일에서도 보이도록 강제 스타일 적용 및 텍스트 변경 -->
+                    <span class="toggle-text" style="display: inline-block !important; font-size: 0.8em;">자동 채점 ON/OFF</span>
+                </label>
+            </div>
+
+            <!-- 다시 풀기 버튼 (시험 완료 시 JS로 표시) -->
+            <!-- [요청 3] 다시 풀기 기능 연동을 위한 ID 확인 -->
+            <button id="retry-btn" class="home-btn hidden" onclick="retryExam()">🔄 다시</button>
+            <button class="home-btn" onclick="goHome()">🏠 홈으로</button>
+        </div>
     </div>
 
     <div class="app-container">
@@ -30,6 +55,7 @@
             
             <!-- [그룹 1] 모의고사 1, 2, 3회 -->
             <div class="mode-grid practice-grid">
+                <!-- [요청 1] 버튼 클릭 시 모의고사 모드 진입 -->
                 <button class="mode-btn" onclick="startPractice(1)">
                     <span style="font-size: 2em;">📘</span>
                     <span style="font-weight:bold; margin-top:10px;">모의고사 1회</span>
@@ -63,17 +89,22 @@
             </div>
 
             <h3 style="margin-top:40px; color:#888;">이 페이지가 자격증 공부에 도움이 되길 바라며, SC-900 합격을 기원합니다.<br>Good Luck! 🍀</h3>
+            <div style="margin-top: 15px; color: #a19f9d; font-size: 1.2em; font-weight: 600; letter-spacing: 1.5px;">Made by 허준혁</div>
         </div>
 
         <!-- Exam Area -->
         <div id="exam-area" class="hidden">
-            <!-- 문제 리스트가 먼저 나옴 -->
+            
+            <!-- 상단 정보 영역 -->
+            <div id="exam-top-info" class="exam-top-info">
+                <h2 id="exam-title-display">모의고사 제목</h2>
+            </div>
+
+            <!-- 문제 리스트가 들어갈 곳 -->
             <div id="question-list"></div>
 
-            <!-- [위치 변경] 상태 바 (제출/채점)를 맨 아래로 이동 -->
+            <!-- 하단 상태 바 (제출 버튼) -->
             <div class="status-bar" id="desktop-status-bar">
-                <div id="exam-title" style="font-weight:bold; font-size:1.1em;"></div>
-                <div id="timer-display" class="timer"></div>
                 <button id="submit-btn" class="submit-btn" onclick="finishExam()">제출 및 채점</button>
             </div>
         </div>
@@ -81,6 +112,7 @@
 
     <!-- Mobile Bottom Navigation -->
     <div class="mobile-nav-bar" id="mobile-nav">
+        <!-- [수정 완료 1] 버튼이 moveQuestion 함수를 호출함 (하단 스크립트에 추가) -->
         <button class="nav-btn" id="mob-prev-btn" onclick="moveQuestion(-1)">◀ 이전</button>
         <button class="nav-indicator-btn" onclick="openMapModal()">
             <span style="font-size:1.2em;">▦</span> 
@@ -98,7 +130,7 @@
             <p id="result-msg" style="font-size: 1.1em;"></p>
             <div style="margin-top:30px; display:flex; flex-direction:column; gap:10px;">
                 <button class="submit-btn" style="width:100%;" onclick="closeModalAndReview()">📝 오답 확인하기 (리뷰)</button>
-                <button class="submit-btn" style="background:#666; width:100%;" onclick="goHome()">🏠 메인으로 나가기</button>
+                <button class="submit-btn" style="background:#666; width:100%;" onclick="goHome()">🏠 홈으로 나가기</button>
             </div>
         </div>
     </div>
@@ -114,20 +146,18 @@
     </div>
 </div>
 
-<!-- [Part 2] 개념 정리 (asd.html 내용) -->
+<!-- [Part 2] 개념 정리 -->
 <div id="concept-view">
-    <!-- [추가] 개념 백과사전용 고정 헤더 (메인과 디자인 통일) -->
+    <!-- 개념 백과사전용 고정 헤더 -->
     <div class="header-bar concept-fixed-header">
         <div class="header-left">
             <div class="header-title">📚 개념 백과사전</div>
         </div>
-        <!-- 기존 'concept-back-btn' 대신 메인과 동일한 'home-btn' 클래스 사용 -->
-        <button class="home-btn" onclick="hideConceptView()">🏠 처음</button>
+        <button class="home-btn" onclick="hideConceptView()">🏠 홈으로</button>
     </div>
 
     <div class="concept-container">
         <div class="concept-header">
-            <!-- 기존 뒤로가기 버튼 제거됨 (헤더로 이동) -->
             <h1>📚 SC-900 개념 백과사전</h1>
             <p>제공된 120문제를 완벽 분석하여 정리한 모든 개념입니다.</p>
             <input type="text" id="searchInput" class="search-box" placeholder="개념 검색 (예: MFA, Bastion)" onkeyup="filterConcepts()">
@@ -376,6 +406,17 @@
 
 <!-- 자바스크립트 분리 (모든 로직은 여기에) -->
 <script src="script.js" defer></script>
+<!-- [수정 완료 1] HTML만 수정해야 해서, 누락된 JS 기능을 여기에 임시로 추가함 -->
+<script>
+    // JS 파일에 이 함수가 없어서 버튼이 동작하지 않았음.
+    // HTML 파일 내에서 동작하도록 함수를 직접 정의함.
+    function moveQuestion(step) {
+        const newIdx = mobileCurrentIdx + step;
+        if (newIdx >= 0 && newIdx < currentQuestions.length) {
+            mobileCurrentIdx = newIdx;
+            updateMobileDisplay();
+        }
+    }
+</script>
 </body>
 </html>
-
