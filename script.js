@@ -1,6 +1,7 @@
 /**
  * [SC-900 합격 마스터] 메인 스크립트
  * 버그 수정 완료: 타이머 작동, 초기화 로직, 버튼 표시 조건 완벽 해결
+ * 추가 수정: 복수 정답 문제 자동 채점 타이밍 개선 (정답 갯수만큼 선택 시 채점)
  * 작성자: 30년차 장인
  */
 
@@ -217,8 +218,15 @@ function toggleAutoGrade(el) {
     
     // 1. 이미 푼 문제들에 대해 즉시 피드백 적용
     if (isAutoGrade) {
-        currentQuestions.forEach((_, idx) => {
-            if (userAnswers[idx]) checkSingle(idx);
+        currentQuestions.forEach((q, idx) => {
+            if (userAnswers[idx]) {
+                // [수정] 복수 정답 문제도 조건(갯수 일치) 만족하면 채점
+                if(q.type === 'check') {
+                    if(userAnswers[idx].length === q.ans.length) checkSingle(idx);
+                } else {
+                    checkSingle(idx);
+                }
+            }
         });
     }
     
@@ -469,12 +477,30 @@ function saveAns(idx, val) {
     userAnswers[idx] = val; 
     if(isAutoGrade) checkSingle(idx); 
 }
+
+// [핵심 수정] 복수 정답 문제 자동 채점 로직 개선
+// 사용자가 정답 개수(예: 2개, 3개)만큼 선택했을 때만 채점을 수행함
 function saveCheck(idx, el) {
     if(!userAnswers[idx]) userAnswers[idx] = [];
-    if(el.checked) userAnswers[idx].push(el.value);
-    else userAnswers[idx] = userAnswers[idx].filter(x => x !== el.value);
-    if(isAutoGrade) checkSingle(idx);
+    
+    // 체크 여부에 따라 배열에 추가하거나 제거
+    if(el.checked) {
+        userAnswers[idx].push(el.value);
+    } else {
+        userAnswers[idx] = userAnswers[idx].filter(x => x !== el.value);
+    }
+
+    // 자동 채점 모드일 경우의 로직
+    if(isAutoGrade) {
+        const q = currentQuestions[idx];
+        // q.ans 배열의 길이는 정답의 개수와 동일함 (예: ["A", "B"] -> 2개)
+        // 사용자가 선택한 개수가 정답 개수와 일치할 때만 채점 함수 호출
+        if(userAnswers[idx].length === q.ans.length) {
+            checkSingle(idx);
+        }
+    }
 }
+
 function saveYn(idx, subIdx, val) {
     if(!userAnswers[idx]) userAnswers[idx] = {};
     userAnswers[idx][subIdx] = val;
